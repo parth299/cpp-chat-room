@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <cstring>
 #ifndef MESSAGE_HPP
 #define MESSAGE_HPP
 
@@ -12,6 +13,7 @@ class Message {
         Message(std::string message) {
             bodyLength_ = getNewBodyLength(message.size());
             encodeHeader();
+            std::memcpy(data+header, message.c_str(), bodyLength_);
         }
 
         size_t getNewBodyLength(size_t newLength) {
@@ -21,10 +23,34 @@ class Message {
             return newLength;
         }
 
+        std::string getData() {
+            std::string dataString(data, header+bodyLength_);
+            return dataString;
+        }
+        std::string getBody() {
+            std::string dataString = getData();
+            std::string bodyString = dataString.substr(header, bodyLength_);
+            return bodyString;
+        }
+
+        bool decodeHeader() {
+            char new_header[header+1] = "";
+            strncpy(new_header, data, header);
+            new_header[header] = '\0';
+            int headervalue = atoi(new_header);
+
+            if(headervalue > maxBytes) {
+                bodyLength_ = 0;
+                return false;
+            }
+            bodyLength_ = headervalue;
+            return true;
+        }
+
         void encodeHeader() {
             char newHeader[header + 1] = "";
             snprintf(newHeader, sizeof(newHeader), "%4zu", bodyLength_);
-            memcpy(data, newHeader, header);
+            std::memcpy(data, newHeader, header);
         }
 
     private:
