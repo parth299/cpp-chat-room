@@ -1,4 +1,4 @@
-#include "chatroom.hpp"
+#include "chatRoom.hpp"
 
 void Room::join(ParticipantPointer participant) {
     this->participants.insert(participant);
