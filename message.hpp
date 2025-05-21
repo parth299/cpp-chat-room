@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+
 #ifndef MESSAGE_HPP
 #define MESSAGE_HPP
 
@@ -51,6 +52,10 @@ class Message {
             char newHeader[header + 1] = "";
             snprintf(newHeader, sizeof(newHeader), "%4zu", bodyLength_);
             std::memcpy(data, newHeader, header);
+        }
+
+        size_t getBodyLength() {
+            return bodyLength_;
         }
 
     private:
